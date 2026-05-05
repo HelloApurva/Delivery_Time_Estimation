@@ -1,14 +1,38 @@
 import streamlit as st
 import numpy as np
 import pickle
+import requests
 
 st.set_page_config(page_title="Delivery Time Prediction", layout="centered")
 
 st.title("🚚 Delivery Time Prediction App")
 st.write("Enter order details to predict delivery time")
 
-# ---------------- LOAD MODEL ----------------
-model = pickle.load(open("model.pkl", "rb"))
+# ---------------- LOAD MODEL FROM GOOGLE DRIVE ----------------
+
+@st.cache_resource
+def load_model():
+    url = "https://drive.google.com/uc?export=download&id=1elMn67oDYcy2OYGS4ynYIcxry4lRPBuD"
+    
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        st.error("Failed to download model from Google Drive")
+        return None
+
+    with open("model.pkl", "wb") as f:
+        f.write(response.content)
+
+    with open("model.pkl", "rb") as f:
+        model = pickle.load(f)
+
+    return model
+
+
+model = load_model()
+
+if model is None:
+    st.stop()
 
 # ---------------- MAPPINGS ----------------
 
@@ -23,13 +47,6 @@ vehicle_map = {
     "Bike": 0,
     "Scooter": 1,
     "Car": 2
-}
-
-order_map = {
-    "Snack": 0,
-    "Meal": 1,
-    "Drinks": 2,
-    "Buffet": 3
 }
 
 festival_map = {
@@ -69,9 +86,13 @@ City = city_map[
     st.sidebar.selectbox("City Type", list(city_map.keys()))
 ]
 
-Time_taken_by_restraunt_in_mins = st.sidebar.number_input("Restaurant Preparation Time (mins)", 5, 120, 20)
+Time_taken_by_restraunt_in_mins = st.sidebar.number_input(
+    "Restaurant Preparation Time (mins)", 5, 120, 20
+)
 
-Delivery_person_Ratings = st.sidebar.slider("Delivery Person Ratings", 1.0, 5.0, 4.0)
+Delivery_person_Ratings = st.sidebar.slider(
+    "Delivery Person Ratings", 1.0, 5.0, 4.0
+)
 
 distance_km = st.sidebar.number_input("Distance (km)", 0.1, 50.0, 5.0)
 
@@ -79,7 +100,7 @@ distance_km = st.sidebar.number_input("Distance (km)", 0.1, 50.0, 5.0)
 
 if st.button("Predict Delivery Time"):
 
-    input_data = np.array([[
+    input_data = np.array([[ 
         Delivery_person_Age,
         Road_traffic_density,
         Vehicle_condition,
@@ -96,4 +117,4 @@ if st.button("Predict Delivery Time"):
 
     st.success(f"⏱️ Estimated Delivery Time: {prediction[0]:.2f} minutes")
 
-st.caption("Model powered delivery prediction system 🚀")
+st.caption("🚀 ML-powered Delivery Time Prediction System")
