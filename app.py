@@ -28,12 +28,13 @@ def load_model():
 
 model = load_model()
 
-# ---------------- HEADER (STARTUP STYLE) ----------------
+# ---------------- TOP HERO SECTION (STARTUP STYLE) ----------------
 st.markdown(
     """
-    <div style="text-align:center;">
-        <h1 style="color:#2E86C1;">🚚 SwiftDelivery AI</h1>
-        <h4 style="color:gray;">Predict delivery time instantly using Machine Learning</h4>
+    <div style="text-align:center; padding:20px;">
+        <h1 style="color:#1f77b4;">🚚 SwiftDelivery AI</h1>
+        <h3 style="color:gray;">AI-powered Delivery Time Prediction System</h3>
+        <p style="color:#555;">Predict delivery ETA in real-time using Machine Learning</p>
     </div>
     """,
     unsafe_allow_html=True
@@ -41,159 +42,170 @@ st.markdown(
 
 st.markdown("---")
 
-# ---------------- INFO CARDS ----------------
-col1, col2, col3 = st.columns(3)
+# ---------------- KPI CARDS ----------------
+c1, c2, c3, c4 = st.columns(4)
 
-col1.metric("⚡ Fast Prediction", "Real-time")
-col2.metric("🧠 AI Model", "Random Forest")
-col3.metric("📦 Use Case", "Delivery ETA")
+c1.metric("⚡ Speed", "Real-time")
+c2.metric("🧠 Model", "Random Forest")
+c3.metric("📦 Use Case", "Food Delivery")
+c4.metric("🎯 Status", "Live")
 
 st.markdown("---")
 
-# ---------------- SIDEBAR ----------------
+# ---------------- SIDEBAR INPUTS ----------------
 st.sidebar.header("📦 Order Configuration")
-
-Delivery_person_Age = st.sidebar.number_input("Age", 18, 65, 25)
 
 traffic_map = {"Low": 0, "Medium": 1, "High": 2, "Jam": 3}
 vehicle_map = {"Bike": 0, "Scooter": 1, "Car": 2}
 festival_map = {"No": 0, "Yes": 1}
 city_map = {"Urban": 0, "Semi-Urban": 1, "Metropolitan": 2}
 
-Road_traffic_density = traffic_map[
+age = st.sidebar.number_input("Delivery Person Age", 18, 65, 25)
+
+traffic = traffic_map[
     st.sidebar.selectbox("Traffic Level", list(traffic_map.keys()))
 ]
 
-Vehicle_condition = st.sidebar.selectbox("Vehicle Condition", [0, 1, 2])
+vehicle_condition = st.sidebar.selectbox("Vehicle Condition", [0, 1, 2])
 
-Type_of_vehicle = vehicle_map[
+vehicle = vehicle_map[
     st.sidebar.selectbox("Vehicle Type", list(vehicle_map.keys()))
 ]
 
-multiple_deliveries = st.sidebar.selectbox("Multiple Deliveries", [0, 1, 2, 3])
+multi = st.sidebar.selectbox("Multiple Deliveries", [0, 1, 2, 3])
 
-Festival = festival_map[
+festival = festival_map[
     st.sidebar.selectbox("Festival Day?", list(festival_map.keys()))
 ]
 
-City = city_map[
+city = city_map[
     st.sidebar.selectbox("City Type", list(city_map.keys()))
 ]
 
-Restaurant_time = st.sidebar.number_input("Restaurant Prep Time (min)", 5, 120, 20)
+prep_time = st.sidebar.number_input("Restaurant Prep Time", 5, 120, 20)
 
-Rating = st.sidebar.slider("Delivery Rating", 1.0, 5.0, 4.0)
+rating = st.sidebar.slider("Delivery Rating", 1.0, 5.0, 4.0)
 
-distance_km = st.sidebar.number_input("Distance (km)", 0.1, 50.0, 5.0)
+distance = st.sidebar.number_input("Distance (km)", 0.1, 50.0, 5.0)
 
-# ---------------- INPUT ----------------
+# ---------------- INPUT ARRAY ----------------
 input_data = np.array([[
-    Delivery_person_Age,
-    Road_traffic_density,
-    Vehicle_condition,
-    Type_of_vehicle,
-    multiple_deliveries,
-    Festival,
-    City,
-    Restaurant_time,
-    Rating,
-    distance_km
+    age, traffic, vehicle_condition, vehicle,
+    multi, festival, city,
+    prep_time, rating, distance
 ]])
 
-# ---------------- MAIN LAYOUT ----------------
-left, right = st.columns([1.2, 1])
+# ---------------- TABS (STARTUP DASHBOARD STYLE) ----------------
+tab1, tab2, tab3 = st.tabs(["🚀 Predict", "📊 Insights", "📘 About"])
 
-# ---------------- PREDICTION PANEL ----------------
-with left:
+# ---------------- TAB 1: PREDICTION ----------------
+with tab1:
 
-    st.subheader("🚀 Prediction Engine")
+    col1, col2 = st.columns([1, 1])
 
-    if st.button("Predict Delivery Time"):
+    with col1:
 
-        prediction = model.predict(input_data)[0]
+        st.subheader("Prediction Engine")
 
-        st.success(f"⏱️ Estimated Delivery Time: **{prediction:.2f} minutes**")
+        if st.button("🚀 Predict Delivery Time"):
 
-        st.markdown("### 🧠 Smart Explanation")
+            prediction = model.predict(input_data)[0]
 
-        insights = []
+            st.success(f"⏱️ Estimated Delivery Time: **{prediction:.2f} minutes**")
 
-        if distance_km > 10:
-            insights.append("📍 Long distance increases delivery time")
+            st.markdown("### 🧠 Explanation")
 
-        if Road_traffic_density >= 2:
-            insights.append("🚦 High traffic slows delivery")
+            reasons = []
 
-        if Restaurant_time > 40:
-            insights.append("🍽️ Restaurant preparation delay")
+            if distance > 10:
+                reasons.append("📍 Long distance increases time")
 
-        if Rating < 3:
-            insights.append("⭐ Low delivery efficiency rating")
+            if traffic >= 2:
+                reasons.append("🚦 High traffic delay")
 
-        if multiple_deliveries > 1:
-            insights.append("📦 Multiple orders increase delay")
+            if prep_time > 40:
+                reasons.append("🍽️ Restaurant preparation delay")
 
-        if len(insights) == 0:
-            insights.append("✔ Conditions are optimal for fast delivery")
+            if rating < 3:
+                reasons.append("⭐ Low delivery efficiency")
 
-        for i in insights:
-            st.write(i)
+            if multi > 1:
+                reasons.append("📦 Multiple deliveries increase time")
 
-# ---------------- DASHBOARD PANEL ----------------
-with right:
+            if len(reasons) == 0:
+                reasons.append("✔ Optimal conditions for fast delivery")
 
-    st.subheader("📊 Order Summary Dashboard")
+            for r in reasons:
+                st.write(r)
 
-    df = pd.DataFrame({
-        "Feature": [
-            "Age", "Traffic", "Vehicle", "Vehicle Type",
-            "Multiple Deliveries", "Festival", "City",
-            "Restaurant Time", "Rating", "Distance"
-        ],
-        "Value": [
-            Delivery_person_Age,
-            Road_traffic_density,
-            Vehicle_condition,
-            Type_of_vehicle,
-            multiple_deliveries,
-            Festival,
-            City,
-            Restaurant_time,
-            Rating,
-            distance_km
-        ]
-    })
+    with col2:
 
-    st.dataframe(df, use_container_width=True)
+        st.subheader("📦 Live Input Summary")
 
-# ---------------- FEATURE IMPACT VISUAL ----------------
-st.markdown("---")
-st.subheader("📈 AI Feature Influence Overview")
+        df = pd.DataFrame({
+            "Feature": [
+                "Age", "Traffic", "Vehicle", "Type",
+                "Multiple", "Festival", "City",
+                "Prep Time", "Rating", "Distance"
+            ],
+            "Value": [
+                age, traffic, vehicle, vehicle,
+                multi, festival, city,
+                prep_time, rating, distance
+            ]
+        })
 
-features = [
-    "Age", "Traffic", "Vehicle", "Type",
-    "Multiple Orders", "Festival", "City",
-    "Prep Time", "Rating", "Distance"
-]
+        st.dataframe(df, use_container_width=True)
 
-impact = [
-    Delivery_person_Age * 0.1,
-    Road_traffic_density * 2,
-    Vehicle_condition * 1,
-    Type_of_vehicle * 1.2,
-    multiple_deliveries * 1.8,
-    Festival * 2,
-    City * 1.5,
-    Restaurant_time * 0.4,
-    Rating * -1.2,
-    distance_km * 2.2
-]
+# ---------------- TAB 2: INSIGHTS ----------------
+with tab2:
 
-fig, ax = plt.subplots()
-ax.barh(features, impact)
-ax.set_title("Feature Impact on Delivery Time")
-st.pyplot(fig)
+    st.subheader("📈 Feature Influence Overview")
+
+    features = ["Age","Traffic","Vehicle","Type","Multi","Festival","City","Prep","Rating","Distance"]
+
+    impact = [
+        age*0.1,
+        traffic*2,
+        vehicle_condition,
+        vehicle*1.2,
+        multi*1.8,
+        festival*2,
+        city*1.5,
+        prep_time*0.3,
+        rating*-1.2,
+        distance*2.2
+    ]
+
+    fig, ax = plt.subplots()
+    ax.barh(features, impact)
+    ax.set_title("Feature Impact on Delivery Time")
+
+    st.pyplot(fig)
+
+    st.info("This visualization shows how each factor influences delivery time prediction.")
+
+# ---------------- TAB 3: ABOUT ----------------
+with tab3:
+
+    st.subheader("🚚 About SwiftDelivery AI")
+
+    st.write("""
+    SwiftDelivery AI is a machine learning system designed to predict food delivery time 
+    based on real-world conditions like traffic, distance, and order complexity.
+
+    ### 🎯 Goal:
+    Help delivery platforms improve ETA accuracy and customer experience.
+
+    ### 🧠 Model:
+    Random Forest Regressor trained on historical delivery data.
+
+    ### 💡 Impact:
+    - Better delivery planning
+    - Improved customer satisfaction
+    - Reduced delays
+    """)
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.caption("🚀 SwiftDelivery AI | Built with Streamlit | ML Project by Apoorva")
+st.caption("🚀 SwiftDelivery AI | Startup-style ML Product by Apoorva")
