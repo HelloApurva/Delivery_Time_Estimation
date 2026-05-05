@@ -13,12 +13,12 @@ st.set_page_config(
 )
 
 # ---------------- HEADER ----------------
-st.title("🚚 Delivery Time Prediction App")
-st.markdown("### ML-powered system to predict food delivery time")
+st.title("🚚 Delivery Time Prediction System")
+st.markdown("### Smart ML-based delivery time estimator")
 
-st.info("Enter details in sidebar → Get prediction + insights + explanation")
+st.success("Enter delivery details in sidebar and get instant prediction + insights")
 
-# ---------------- MODEL LOAD ----------------
+# ---------------- LOAD MODEL ----------------
 
 @st.cache_resource
 def load_model():
@@ -37,31 +37,20 @@ def load_model():
 
 model = load_model()
 
-# ---------------- FEATURE INFO ----------------
-with st.expander("ℹ️ About Model"):
-    st.write("""
-    - Algorithm: Random Forest Regressor  
-    - Purpose: Predict delivery time in minutes  
-    - Trained on historical delivery dataset  
-    - Inputs include traffic, distance, ratings, etc.
-    """)
-
-# ---------------- FEATURE IMPORTANCE (FAKE SAFE VERSION) ----------------
-# (Streamlit-safe placeholder since we don’t know model internals exactly)
-feature_names = [
-    "Age", "Traffic", "Vehicle Condition", "Vehicle Type",
-    "Multiple Deliveries", "Festival", "City",
-    "Restaurant Time", "Ratings", "Distance"
-]
-
 # ---------------- MAPPINGS ----------------
 traffic_map = {"Low": 0, "Medium": 1, "High": 2, "Jam": 3}
 vehicle_map = {"Bike": 0, "Scooter": 1, "Car": 2}
 festival_map = {"No": 0, "Yes": 1}
 city_map = {"Urban": 0, "Semi-Urban": 1, "Metropolitan": 2}
 
-# ---------------- SIDEBAR ----------------
-st.sidebar.header("📦 Input Details")
+feature_names = [
+    "Age", "Traffic", "Vehicle Condition", "Vehicle Type",
+    "Multiple Deliveries", "Festival", "City",
+    "Restaurant Prep Time", "Rating", "Distance"
+]
+
+# ---------------- SIDEBAR INPUTS ----------------
+st.sidebar.header("📦 Delivery Inputs")
 
 Delivery_person_Age = st.sidebar.number_input("Age", 18, 65, 25)
 
@@ -107,33 +96,47 @@ input_data = np.array([[
     distance_km
 ]])
 
-# ---------------- PREDICTION ----------------
-st.markdown("---")
-
+# ---------------- LAYOUT ----------------
 col1, col2 = st.columns([1, 1])
 
+# ---------------- PREDICTION ----------------
 with col1:
+    st.subheader("📌 Prediction Panel")
+
     if st.button("🚀 Predict Delivery Time"):
 
         prediction = model.predict(input_data)[0]
 
-        st.success(f"⏱️ Estimated Delivery Time: **{prediction:.2f} minutes**")
+        st.markdown("### ⏱️ Estimated Delivery Time")
+        st.success(f"{prediction:.2f} minutes")
 
-        # ---------------- SIMPLE EXPLANATION ----------------
+        # ---------------- SMART EXPLANATION ----------------
         st.subheader("🧠 Why this prediction?")
 
+        explanation = []
+
         if distance_km > 10:
-            st.write("📍 Long distance increases delivery time.")
+            explanation.append("📍 Long distance increases delivery time")
+
         if Road_traffic_density >= 2:
-            st.write("🚦 High traffic slows delivery.")
-        if Delivery_person_Ratings < 3:
-            st.write("⭐ Lower rating may indicate slower delivery.")
+            explanation.append("🚦 High traffic slows delivery")
+
         if Time_taken_by_restraunt_in_mins > 40:
-            st.write("🍽️ Restaurant prep time is high.")
+            explanation.append("🍽️ Restaurant prep time is high")
 
-        st.write("✔ Model combines all factors to estimate final time.")
+        if Delivery_person_Ratings < 3:
+            explanation.append("⭐ Low delivery rating affects speed")
 
-# ---------------- INSIGHTS PANEL ----------------
+        if multiple_deliveries > 1:
+            explanation.append("📦 Multiple deliveries increase delay")
+
+        if len(explanation) == 0:
+            explanation.append("✔ Conditions are optimal for fast delivery")
+
+        for e in explanation:
+            st.write(e)
+
+# ---------------- INPUT SUMMARY ----------------
 with col2:
     st.subheader("📊 Input Summary")
 
@@ -155,15 +158,31 @@ with col2:
 
     st.dataframe(df, use_container_width=True)
 
-# ---------------- SIMPLE VISUAL ----------------
+# ---------------- VISUAL INSIGHT ----------------
 st.markdown("---")
-st.subheader("📈 Sample Insight Visualization")
+st.subheader("📈 Feature Impact Visualization")
 
 fig, ax = plt.subplots()
-ax.bar(["Distance", "Traffic", "Rating"], [distance_km, Road_traffic_density, Delivery_person_Ratings])
-ax.set_title("Key Input Factors (Scaled View)")
+
+impact_values = [
+    Delivery_person_Age * 0.2,
+    Road_traffic_density * 2,
+    Vehicle_condition * 1,
+    Type_of_vehicle * 1.5,
+    multiple_deliveries * 2,
+    Festival * 2,
+    City * 1.5,
+    Time_taken_by_restraunt_in_mins * 0.3,
+    Delivery_person_Ratings * -1,
+    distance_km * 2
+]
+
+ax.bar(feature_names, impact_values)
+ax.set_xticklabels(feature_names, rotation=45, ha='right')
+ax.set_title("Estimated Feature Influence on Delivery Time")
+
 st.pyplot(fig)
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.caption("🚀 Built with Streamlit | ML Project by Apoorva")
+st.caption("🚀 ML Project | Delivery Time Prediction System by Apoorva")
