@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pickle
-import requests
+import gdown
 
 st.set_page_config(page_title="Delivery Time Prediction", layout="centered")
 
@@ -12,27 +12,21 @@ st.write("Enter order details to predict delivery time")
 
 @st.cache_resource
 def load_model():
-    url = "https://drive.google.com/file/d/1elMn67oDYcy2OYGS4ynYIcxry4lRPBuD/view?usp=sharing"
-    
-    response = requests.get(url)
-    
-    if response.status_code != 200:
-        st.error("Failed to download model from Google Drive")
-        return None
 
-    with open("model.pkl", "wb") as f:
-        f.write(response.content)
+    file_id = "1elMn67oDYcy2OYGS4ynYIcxry4lRPBuD"
+    url = f"https://drive.google.com/uc?id={file_id}"
 
-    with open("model.pkl", "rb") as f:
+    output = "model.pkl"
+
+    gdown.download(url, output, quiet=False)
+
+    with open(output, "rb") as f:
         model = pickle.load(f)
 
     return model
 
 
 model = load_model()
-
-if model is None:
-    st.stop()
 
 # ---------------- MAPPINGS ----------------
 
@@ -47,6 +41,13 @@ vehicle_map = {
     "Bike": 0,
     "Scooter": 1,
     "Car": 2
+}
+
+order_map = {
+    "Snack": 0,
+    "Meal": 1,
+    "Drinks": 2,
+    "Buffet": 3
 }
 
 festival_map = {
@@ -70,7 +71,9 @@ Road_traffic_density = traffic_map[
     st.sidebar.selectbox("Traffic Condition", list(traffic_map.keys()))
 ]
 
-Vehicle_condition = st.sidebar.selectbox("Vehicle Condition (0 = worst, 2 = best)", [0, 1, 2])
+Vehicle_condition = st.sidebar.selectbox(
+    "Vehicle Condition (0 = worst, 2 = best)", [0, 1, 2]
+)
 
 Type_of_vehicle = vehicle_map[
     st.sidebar.selectbox("Vehicle Type", list(vehicle_map.keys()))
@@ -100,7 +103,7 @@ distance_km = st.sidebar.number_input("Distance (km)", 0.1, 50.0, 5.0)
 
 if st.button("Predict Delivery Time"):
 
-    input_data = np.array([[ 
+    input_data = np.array([[
         Delivery_person_Age,
         Road_traffic_density,
         Vehicle_condition,
