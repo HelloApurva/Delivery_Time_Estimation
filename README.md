@@ -72,6 +72,17 @@ Target variable:
 Tree-based and boosting algorithms performed significantly better than linear models due to the non-linear nature of the dataset. Proper feature engineering and preprocessing played a crucial role in improving model performance.
 
 ---
+## 📊 Visual Insights
+
+### Delivery Time Distribution
+![Delivery Distribution](images/delivery_distribution.png)
+
+### Traffic Impact
+![Traffic Analysis](images/traffic_analysis.png)
+
+### Heat Map
+![Model Comparison](images/heatmap_distribution.png)
+
 
 ## 👩‍💻 Author
 **Apoorva Sharma**.
