@@ -3,7 +3,8 @@
 
 # 🚀 Delivery Time Prediction using Machine Learning
 
-A machine learning project that predicts food delivery time with high accuracy using advanced ensemble models and real-world features.
+Built a machine learning model to predict food delivery time using 45,000+ records and real-world features like traffic, weather, and distance.
+Achieved ~82% R² score using advanced ensemble models like LightGBM and CatBoost.
 
 ## 📌 Project Overview
 This project focuses on predicting food delivery time using machine learning techniques. The goal is to analyze various real-world factors such as traffic conditions, weather, delivery partner details, and distance to estimate accurate delivery duration.
@@ -74,6 +75,11 @@ Target variable:
 
 ---
 
+## 📁 Dataset
+Dataset contains 45,000+ delivery records with features related to traffic, weather, and delivery conditions.
+
+--
+
 ## 📂 Project Files
 - `report.pdf` → Detailed project report  
 - `delivery_model.py` → Model implementation code  
@@ -95,6 +101,23 @@ Tree-based and boosting algorithms performed significantly better than linear mo
 ### Heat Map
 ![Model Comparison](heatmap_distribution.png)
 
+--
 
+## ▶️ How to Run
+
+1. Clone the repository
+2. Install dependencies:
+   pip install -r requirements.txt
+3. Run the notebook or Python file
+
+--
+
+## 🚀 Future Improvements
+- Deploy model using Streamlit
+- Integrate real-time traffic APIs
+- Build live delivery prediction system
+
+--
+  
 ## 👩‍💻 Author
 **Apoorva Sharma**.
