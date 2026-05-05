@@ -12,7 +12,7 @@ st.write("Enter order details to predict delivery time")
 
 @st.cache_resource
 def load_model():
-    url = "https://drive.google.com/uc?export=download&id=1elMn67oDYcy2OYGS4ynYIcxry4lRPBuD"
+    url = "https://drive.google.com/file/d/1elMn67oDYcy2OYGS4ynYIcxry4lRPBuD/view?usp=sharing"
     
     response = requests.get(url)
     
