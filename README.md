@@ -7,7 +7,19 @@ Built a machine learning model to predict food delivery time using 45,000+ recor
 Achieved ~82% R² score using advanced ensemble models like LightGBM and CatBoost.
 
 ## 📌 Project Overview
-This project focuses on predicting food delivery time using machine learning techniques. The goal is to analyze various real-world factors such as traffic conditions, weather, delivery partner details, and distance to estimate accurate delivery duration.
+
+This project contains two parts:
+
+### 1. Exploratory Data Analysis & Model Training (Notebook)
+- Multiple ML algorithms tested (Random Forest, XGBoost, etc.)
+- Feature engineering with full dataset
+- Model comparison performed
+
+### 2. Deployment (Streamlit App)
+- Final deployed model: Random Forest Regressor
+- Uses selected important features only
+- Optimized for real-time prediction and simplicity
+
 
 ---
 
