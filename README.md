@@ -1,5 +1,7 @@
 # 🚀 Delivery Time Prediction using Machine Learning
 
+A machine learning project that predicts food delivery time with high accuracy using advanced ensemble models and real-world features.
+
 ## 📌 Project Overview
 This project focuses on predicting food delivery time using machine learning techniques. The goal is to analyze various real-world factors such as traffic conditions, weather, delivery partner details, and distance to estimate accurate delivery duration.
 
