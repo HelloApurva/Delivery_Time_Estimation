@@ -75,13 +75,13 @@ Tree-based and boosting algorithms performed significantly better than linear mo
 ## 📊 Visual Insights
 
 ### Delivery Time Distribution
-![Delivery Distribution](images/delivery_distribution.png)
+![Delivery Distribution](delivery_distribution.png)
 
 ### Traffic Impact
-![Traffic Analysis](images/traffic_analysis.png)
+![Traffic Analysis](traffic_analysis.png)
 
 ### Heat Map
-![Model Comparison](images/heatmap_distribution.png)
+![Model Comparison](heatmap_distribution.png)
 
 
 ## 👩‍💻 Author
