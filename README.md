@@ -1,3 +1,6 @@
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![ML](https://img.shields.io/badge/Machine%20Learning-Project-green)
+
 # 🚀 Delivery Time Prediction using Machine Learning
 
 A machine learning project that predicts food delivery time with high accuracy using advanced ensemble models and real-world features.
