@@ -32,7 +32,14 @@ Target variable:
 5. Model Training & Evaluation  
 
 ---
+## 🛠️ Tech Stack
+- Python
+- Pandas, NumPy
+- Matplotlib, Seaborn
+- Scikit-learn
+- XGBoost, LightGBM, CatBoost
 
+  
 ## 🤖 Machine Learning Models Used
 - Linear Regression  
 - Ridge & Lasso Regression  
